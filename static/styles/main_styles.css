@@ -1,5 +1,6 @@
 :root {
-    --bg-col: rgb(161, 205, 161);
+    --bg-col: rgb(254,251,234);
+    --container-col: rgb(235,188,78);
     --border-col: rgb(0, 0, 0);
     --font-col: rgb(0, 0, 0);
 }
@@ -7,17 +8,27 @@
 /* ELEMENTS */
 
 body {
-    background-color: lightgreen;
+    background-color: var(--bg-col);
+    font-family: Verdana;
 }
 
 /* CLASSES */
 
+.container_title {
+    text-align: center;
+}
+
+.page_divider {
+    border: 2px solid var(--border-col);
+}
+
 /* IDs */
 
 #container {
-    background-color: var(--bg-col);
-    width: 80%;
-    transform: translateX(10%);
+    background-color: var(--container-col);
+    width: 98%;
+    transform: translateX(1%);
+    border: 2px solid var(--border-col);
 }
 
 /* FUNCTIONS */
