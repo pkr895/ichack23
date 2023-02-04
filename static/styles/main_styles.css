@@ -1,0 +1,23 @@
+:root {
+    --bg-col: rgb(161, 205, 161);
+    --border-col: rgb(0, 0, 0);
+    --font-col: rgb(0, 0, 0);
+}
+
+/* ELEMENTS */
+
+body {
+    background-color: lightgreen;
+}
+
+/* CLASSES */
+
+/* IDs */
+
+#container {
+    background-color: var(--bg-col);
+    width: 80%;
+    transform: translateX(10%);
+}
+
+/* FUNCTIONS */
