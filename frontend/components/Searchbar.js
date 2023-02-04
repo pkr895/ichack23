@@ -1,3 +1,7 @@
 export default function () {
-  return <div></div>;
+  return (
+    <div className='mx-auto'>
+      <input type='text' />
+    </div>
+  );
 }
