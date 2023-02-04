@@ -4,7 +4,10 @@ export default function Document() {
   return (
     <Html lang='en'>
       <Head />
-      <body className='bg-amber-100'>
+      <body
+        style={{ width: '100vw', height: '100vh' }}
+        className='bg-fuchsia-700'
+      >
         <Main />
         <NextScript />
       </body>
