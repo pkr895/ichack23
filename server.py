@@ -1,36 +1,40 @@
-from flask import Flask, request, render_template, url_for, redirect
+from flask import Flask, request, render_template, url_for, redirect, jsonify
 import scraper
-import os
 from googlesearch import search
 
-search_item = input("Search item: ")
 
-searched = search(search_item + "wikipedia", stop=3, lang="en")
-try:
-    url = [i for i in searched if "https://en.wikipedia.org/wiki/" in i][0]
-except:
-    print("Nothing found.")
-#print(urls[0])
+app = Flask(__name__)
 
-#app = Flask(__name__)
+def get_details(url):
+    webscraper = scraper.webscraperManager(url)
 
-#DB LAYOUT
-#template = {"ID": x, "Name": event_name, "Date": "1939-1949", "Summary": "this happened then that happened ...", "Longitude": xxxxx, "Latitude": yyyyy "Tags": "A, B, C"}
-#_ = timelines.insert_one(template)
+    webscraper.generateMainSoup()
 
-webscraper = scraper.webscraperManager(url)
+    title = webscraper.getTitle()
 
-webscraper.generateMainSoup()
+    lat, long = webscraper.getLocation()
 
-title = webscraper.getTitle()
+    query = webscraper.topNParagraphsOfPage()
 
-lat, long = webscraper.getLocation()
+    date = webscraper.getDate()
 
-query = webscraper.topNParagraphsOfPage()
+    # print(title)
+    # print(lat, long)
+    # print(query)
+    # print(date)
 
-date = webscraper.getDate()
+    return title, date, query, lat, long
 
-print(title)
-print(lat, long)
-print(query)
-print(date)
+
+@app.route("/", methods=['POST'])
+def parseSearch():
+    search_item = request.get_json()
+    #search_item = input("Search item: ")
+
+    searched = search(search_item + "wikipedia", stop=3, lang="en")
+    try:
+        url = [i for i in searched if "https://en.wikipedia.org/wiki/" in i][0]
+        title, date, query, lat, long = get_details(url)
+        return jsonify(title, date, query, lat, long)
+    except:
+        return None
