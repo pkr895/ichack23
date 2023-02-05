@@ -68,7 +68,7 @@ export default function Searchbar() {
           hoverBackgroundColor: 'rgba(255, 255, 255, 0.6)',
           iconColor: '#421648',
         }}
-        showIcon={false}
+        // showIcon={false}
         showNoResults={false}
         showNoResultsText={false}
       />
