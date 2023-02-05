@@ -5,44 +5,19 @@ export default function Searchbar() {
   const items = [
     {
       id: 0,
-      name: 'WW2',
-    },
-    {
-      id: 1,
       name: 'WW1',
     },
     {
-      id: 2,
-      name: 'Basic',
-    },
-    {
-      id: 3,
-      name: 'PHP',
-    },
-    {
-      id: 4,
-      name: 'Java',
+      id: 1,
+      name: 'WW2',
     },
   ];
 
-  const handleOnSearch = (string, results) => {
-    // onSearch will have as the first callback parameter
-    // the string searched and for the second the results.
-    console.log(string, results);
-  };
-
-  const handleOnHover = (result) => {
-    // the item hovered
-    console.log(result);
-  };
-
   const handleOnSelect = (item) => {
     // the item selected
-    console.log(item);
-  };
-
-  const handleOnFocus = () => {
-    console.log('Focused');
+    // send request with input
+    // animate up
+    // display timeline
   };
 
   const formatResult = (item) => {
@@ -55,10 +30,7 @@ export default function Searchbar() {
     <div style={{ width: 400, margin: 'auto' }}>
       <ReactSearchAutocomplete
         items={items}
-        onSearch={handleOnSearch}
-        onHover={handleOnHover}
         onSelect={handleOnSelect}
-        onFocus={handleOnFocus}
         autoFocus
         formatResult={formatResult}
         styling={{
