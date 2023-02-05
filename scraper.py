@@ -5,18 +5,19 @@ from bs4 import BeautifulSoup
 class webscraperManager():
     def __init__(self, url):
         self.url = url
-        urlParts = url.split(".")
+        urlParts = self.url.split(".")
 
         self.baseUrl = urlParts[0] + "." + urlParts[1] + "." + urlParts[2].split("/")[0]
+        self.soup = None
 
-    def removeSquareBrackets(text):
+    def removeSquareBrackets(self, text):
         text = re.sub("\[[^\]]*\]", "", text)
         return text
 
 
-    def topNParagraphsOfPage(main): 
+    def topNParagraphsOfPage(self): 
         final = ""
-        newpTags = main.findChildren("p", recursive=False)
+        newpTags = self.main.findChildren("p", recursive=False)
 
         for pTag in newpTags[:2]:
             text = pTag.text
@@ -26,24 +27,50 @@ class webscraperManager():
 
         return final
 
-    def generateMainSoup(url): 
-        page = requests.get(url)
-        soup = BeautifulSoup(page.content, "html.parser")
+    def generateMainSoup(self): 
+        page = requests.get(self.url)
+        self.soup = BeautifulSoup(page.content, "html.parser")
 
-        superMain = soup.find_all("div", {"id": "mw-content-text"})[0]
+        superMain = self.soup.find_all("div", {"id": "mw-content-text"})[0]
 
-        main = False
+        self.main = False
 
         for mainTag in superMain.findChildren("div", recursive=False):
             if mainTag["class"][0] == "mw-parser-output":
-                main = mainTag
+                self.main = mainTag
                 break
 
-        return main, soup
+        #return self.main, self.soup
 
-    def topNParagraphsOfTag(tag):
+    def getTitle(self):
+        heading = self.soup.find("h1", {"id": "firstHeading"}).findChild("span", recursive=False).text
+        return heading
+
+    def getLocation(self):
+        lat = self.soup.find("span", {"class": "latitude"})
+        long = self.soup.find("span", {"class": "longitude"})
+        if lat != None and long != None:
+            return lat.text, long.text
+        return None, None
+
+    def getDate(self):
+        try:
+            infobox = self.soup.find("table", {"class": "infobox"})
+            date = infobox.find("th", text="Date").find_next_sibling("td")
+            date = date.text.strip().split("[")[0]
+            match = re.search(r'[^–a-zA-Z0-9\s]', date)
+            if match is not None:
+                clean = date[:match.span()[0]]
+                if len(clean) < 4:
+                    return re.search(r'\d{4}', date).group()
+                return clean
+            return date        
+        except:
+            return None
+
+    def topNParagraphsOfTag(self, tag):
         aTag = tag.findChildren("a", recursive=False)[0]
-        newUrl = baseUrl + aTag["href"]
+        newUrl = self.baseUrl + aTag["href"]
         
         newMain, newSoup = self.generateMainSoup(newUrl)
 
@@ -52,11 +79,11 @@ class webscraperManager():
         return [aTag.text, text]
 
  
-    def headingIterationParagraphs(main):
+    def headingIterationParagraphs(self):
             
         headingsContent = []
         
-        kiddieTags = main.findChildren(recursive=False)
+        kiddieTags = self.main.findChildren(recursive=False)
 
         justHadHeading = False
         previousHeading = False
@@ -72,7 +99,7 @@ class webscraperManager():
                 if kid.name == "div":
                     if "role" in kid.attrs:
                         if kid["role"] == "note":
-                            headingsContent.append(topNParagraphsOfTag(kid))
+                            headingsContent.append(self.topNParagraphsOfTag(kid))
 
                             theShowDown = True
 
@@ -87,38 +114,38 @@ class webscraperManager():
         return headingsContent
 
 ########################shits deprecated wallah back off
-    def headingIteration(main): ####DEPRECIATED
-        hTags = main.findChildren(["h2", "h3", "h4"], recursive=False)
-        for hTag in hTags:
-            text = hTag.text
-            text = removeSquareBrackets(text)
-            print(text)
+    # def headingIteration(self, main): ####DEPRECIATED
+    #     hTags = main.findChildren(["h2", "h3", "h4"], recursive=False)
+    #     for hTag in hTags:
+    #         text = hTag.text
+    #         text = removeSquareBrackets(text)
+    #         print(text)
 
-    def mainArticleIteration(soup): #####DEPRECIATED
-        mainTags = soup.find_all("div", {"class": "hatnote navigation-not-searchable"})
+    # def mainArticleIteration(self, soup): #####DEPRECIATED
+    #     mainTags = soup.find_all("div", {"class": "hatnote navigation-not-searchable"})
 
-        for mainTag in mainTags:
-            topNParagraphsOfTag(mainTag)
+    #     for mainTag in mainTags:
+    #         topNParagraphsOfTag(mainTag)
 
 
-    def everySentence(tags): #DEPRECIATED
-        for pTag in tags:
-            text = pTag.text
-            text = re.sub("\[\d+\]", "", text)
+    # def everySentence(self, tags): #DEPRECIATED
+    #     for pTag in tags:
+    #         text = pTag.text
+    #         text = re.sub("\[\d+\]", "", text)
             
-            sentences = text.split(".")
+    #         sentences = text.split(".")
 
-            for sentence in sentences:
-                sent = sentence.strip()
+    #         for sentence in sentences:
+    #             sent = sentence.strip()
                 
-                if len(sent) != 0:
-                    sent = sentence.strip() + "."
+    #             if len(sent) != 0:
+    #                 sent = sentence.strip() + "."
 
-                    match = re.search(r".*([1-2][0-9]{3})",sent)
+    #                 match = re.search(r".*([1-2][0-9]{3})",sent)
 
-                    if match:
-                        end = match.span()[1]
-                        start = end - 4
-                        print(sent, sent[start:end])
+    #                 if match:
+    #                     end = match.span()[1]
+    #                     start = end - 4
+    #                     print(sent, sent[start:end])
 
 
