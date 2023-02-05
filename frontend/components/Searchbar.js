@@ -1,8 +1,7 @@
 import { ReactSearchAutocomplete } from 'react-search-autocomplete';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
 
-export default function Searchbar() {
+export default function Searchbar({ eventSelected, setEventSelected }) {
   // note: the id field is mandatory
   const items = [
     {
@@ -15,10 +14,8 @@ export default function Searchbar() {
     },
   ];
 
-  const [eventSelected, setEventSelected] = useState(false)
-
   const handleOnSelect = (item) => {
-    setEventSelected(true)
+    setEventSelected(true);
     // the item selected
     // send request with input
     // animate up
@@ -32,8 +29,13 @@ export default function Searchbar() {
   };
 
   return (
-    <motion.div style={{ width: 400, margin: 'auto' }} animate={eventSelected ? { y: '-45vh' } : {y: 0 }}
-    transition={{ ease: "easeOut", duration: 2 }}>
+    <motion.div
+      style={{ width: 400 }}
+      position='absolute'
+      initial={{ y: '40vh' }}
+      animate={{ y: eventSelected ? 0 : '40vh' }}
+      transition={{ ease: 'easeOut', duration: 2 }}
+    >
       <ReactSearchAutocomplete
         items={items}
         onSelect={handleOnSelect}
