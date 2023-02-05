@@ -31,8 +31,8 @@ input {
   background-color: #421648;
 }
 
-.gradient-text {
+/* .gradient-text {
   background-image: linear-gradient(180deg, black, rgba(255, 255, 255, 0.01));
   background-clip: text;
   color: transparent;
-}
+} */
